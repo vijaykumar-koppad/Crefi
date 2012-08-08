@@ -1,8 +1,8 @@
-#!/usr/bin/python 
+#!/usr/bin/python
 
 from __future__ import with_statement
-import sys 
-import os 
+import sys
+import os
 import random
 from optparse import OptionParser
 
@@ -14,27 +14,27 @@ def os_rdwr(src,dest,size):
     fd = os.open(dest,os.O_WRONLY|os.O_CREAT|os.O_APPEND, 0644)
     os.write(fd, data)
     os.close(fd)
-    return 
+    return
 
 def create_sparse_file(fil):
     if option.size:
-        option.random = False 
+        option.random = False
         size = option.size
     else:
         size = random.randint(option.min, option.max)
     os_rdwr("/dev/zero", fil, size*1000)
-    return 
- 
+    return
+
 def create_txt_file(fil):
     if option.size:
-        option.random = False 
+        option.random = False
         size = option.size
     else:
         size = random.randint(option.min, option.max)
     if size < 500:
         os_rdwr("/etc/services", fil , size*1000)
     else:
-        file_size = 0 
+        file_size = 0
         while file_size < size:
             os_rdwr("/etc/services", fil , size*1000)
             file_size += 500
@@ -80,10 +80,10 @@ def singledir(mnt_pnt, files):
         files_count = text_files(files, files_count)
     else:
         files_count = sparse_files(files, files_count)
-        
-    
+
+
 if __name__ == '__main__':
-    usage = "usage: %prog [option] <MNT_PT>" 
+    usage = "usage: %prog [option] <MNT_PT>"
     parser = OptionParser(usage=usage)
     parser.add_option("-b", dest="brdth",type="int",default=5,
                       help="number of directories in one level [default: %default]")
@@ -95,12 +95,12 @@ if __name__ == '__main__':
                       help="size of the files to be used in KB")
     parser.add_option("--random",  action="store_true", default=True,
                       help="random size of the file between --min and --max "
-                      "[default: %default]")    
+                      "[default: %default]")
     parser.add_option("--max", action = "store",type="int", default=500,
                       help="maximum size(KB) of the files, if random is True "
                       "[default: %default]")
     parser.add_option("--min", action = "store",type="int", default=10,
-                      help="minimum size(KB) of the files, if random is True " 
+                      help="minimum size(KB) of the files, if random is True "
                       "[default: %default]" )
     parser.add_option("--text", action="store_true", dest="file_type",default=True,
                       help="create text files [default: %default]" )
@@ -115,12 +115,8 @@ if __name__ == '__main__':
         print "usage: <script> [option] <MNT_PT>"
         print ""
         sys.exit(1)
-    args[0] = os.path.abspath(args[0]) 
+    args[0] = os.path.abspath(args[0])
     if option.dir:
         singledir(args[0], option.files)
     else:
         multipledir(args[0], option.brdth, option.depth, option.files)
-                
-                
-    
-    
