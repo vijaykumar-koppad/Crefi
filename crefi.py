@@ -6,12 +6,14 @@ import os
 import random
 from optparse import OptionParser
 
-def os_rdwr(src,dest,size):
+def os_rd(src, size):
     fd = os.open(src,os.O_RDONLY)
     data = os.read(fd, size)
     os.close(fd)
+    return data
 
-    fd = os.open(dest,os.O_WRONLY|os.O_CREAT|os.O_APPEND, 0644)
+def os_wr(dest, data):
+    fd = os.open(dest,os.O_WRONLY|os.O_CREAT|os.O_EXCL, 0644)
     os.write(fd, data)
     os.close(fd)
     return
@@ -22,7 +24,8 @@ def create_sparse_file(fil):
         size = option.size
     else:
         size = random.randint(option.min, option.max)
-    os_rdwr("/dev/zero", fil, size*1000)
+    data = os_rd("/dev/zero", size*1024)
+    os_wr(fil, data)
     return
 
 def create_txt_file(fil):
@@ -32,12 +35,16 @@ def create_txt_file(fil):
     else:
         size = random.randint(option.min, option.max)
     if size < 500:
-        os_rdwr("/etc/services", fil , size*1000)
+        data = os_rd("/etc/services", size*1024)
+        os_wr(fil, data)
     else:
+        data = os_rd("/etc/services", 500*1024)
         file_size = 0
+        fd = os.open(fil,os.O_WRONLY|os.O_CREAT|os.O_EXCL, 0644)
         while file_size < size:
-            os_rdwr("/etc/services", fil , size*1000)
+            os.write(fd, data)
             file_size += 500
+        os.close(fd)
     return
 
 def text_files(files, file_count):
