@@ -5,6 +5,8 @@ import sys
 import os
 import random
 from optparse import OptionParser
+import time
+import string
 
 def os_rd(src, size):
     fd = os.open(src,os.O_RDONLY)
@@ -47,11 +49,19 @@ def create_txt_file(fil):
         os.close(fd)
     return
 
+def get_filename():
+    size = option.flen
+    char = string.uppercase+string.digits
+    st = ''.join(random.choice(char) for i in range(size))
+    ti = str((hex(int(str(time.time()).split('.')[0])))[2:])
+    return ti+"~~"+st
+
 def text_files(files, file_count):
     for k in range(files):
         if not file_count%100:
             print file_count
-        create_txt_file("file"+str(k))
+        fil = get_filename()
+        create_txt_file(fil)
         file_count += 1
     return file_count
 
@@ -59,7 +69,8 @@ def sparse_files(files, file_count):
     for k in range(files):
         if not file_count%100:
             print file_count
-        create_sparse_file("file"+str(k))
+        fil = get_filename()
+        create_sparse_file(fil)
         file_count += 1
     return file_count
 
@@ -98,8 +109,12 @@ if __name__ == '__main__':
                       help="number of levels of directories [default: %default]")
     parser.add_option("-n", dest="files",type="int" ,default=100,
                       help="number of files in each level [default: %default]")
-    parser.add_option("--size", action = "store",type="int",
-                      help="size of the files to be used in KB")
+    parser.add_option("-l", dest="flen",type="int" ,default=10,
+                      help="number of bytes for filename "
+                      "[default: %default]")
+    parser.add_option("--size", action = "store",type="int", default=100,
+                      help="size of the files to be used in KB"
+                      "[default: %default]")
     parser.add_option("--random",  action="store_true", default=True,
                       help="random size of the file between --min and --max "
                       "[default: %default]")
