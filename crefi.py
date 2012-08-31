@@ -112,9 +112,8 @@ if __name__ == '__main__':
     parser.add_option("-l", dest="flen",type="int" ,default=10,
                       help="number of bytes for filename "
                       "[default: %default]")
-    parser.add_option("--size", action = "store",type="int", default=100,
-                      help="size of the files to be used in KB"
-                      "[default: %default]")
+    parser.add_option("--size", action = "store",type="int",
+                      help="size of the files to be used in KB")
     parser.add_option("--random",  action="store_true", default=True,
                       help="random size of the file between --min and --max "
                       "[default: %default]")
