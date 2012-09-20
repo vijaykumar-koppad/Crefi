@@ -7,6 +7,7 @@ import random
 from optparse import OptionParser
 import time
 import string
+import errno
 
 def os_rd(src, size):
     fd = os.open(src,os.O_RDONLY)
@@ -78,13 +79,21 @@ def multipledir(mnt_pnt,brdth,depth,files):
     files_count = 0
     for i in range(brdth):
         breadth = mnt_pnt+"/"+str(i)
-        os.makedirs(breadth)
+        try:
+           os.makedirs(breadth)
+        except OSError as ex:
+            if not ex.errno is errno.EEXIST:
+                raise
         os.chdir(breadth)
         dir_depth = breadth
         print breadth
         for j in range(depth):
             dir_depth = dir_depth+"/"+str(j)
-            os.makedirs(dir_depth)
+            try:
+                os.makedirs(dir_depth)
+            except OSError as ex:
+                if not ex.errno is errno.EEXIST:
+                    raise
             os.chdir(dir_depth)
             if option.file_type:
                 files_count = text_files(files, files_count)
