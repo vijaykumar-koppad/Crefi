@@ -59,7 +59,7 @@ def get_filename():
 
 def text_files(files, file_count):
     for k in range(files):
-        if not file_count%100:
+        if not file_count%option.inter:
             print file_count
         fil = get_filename()
         create_txt_file(fil)
@@ -68,7 +68,7 @@ def text_files(files, file_count):
 
 def sparse_files(files, file_count):
     for k in range(files):
-        if not file_count%100:
+        if not file_count%option.inter:
             print file_count
         fil = get_filename()
         create_sparse_file(fil)
@@ -76,7 +76,7 @@ def sparse_files(files, file_count):
     return file_count
 
 def multipledir(mnt_pnt,brdth,depth,files):
-    files_count = 0
+    files_count = 1
     for i in range(brdth):
         breadth = mnt_pnt+"/"+str(i)
         try:
@@ -101,7 +101,7 @@ def multipledir(mnt_pnt,brdth,depth,files):
                 files_count = sparse_files(files, files_count)
 
 def singledir(mnt_pnt, files):
-    files_count = 0
+    files_count = 1
     os.chdir(mnt_pnt)
     if option.file_type:
         files_count = text_files(files, files_count)
@@ -112,15 +112,8 @@ def singledir(mnt_pnt, files):
 if __name__ == '__main__':
     usage = "usage: %prog [option] <MNT_PT>"
     parser = OptionParser(usage=usage)
-    parser.add_option("-b", dest="brdth",type="int",default=5,
-                      help="number of directories in one level [default: %default]")
-    parser.add_option("-d", dest="depth",type="int",default=5,
-                      help="number of levels of directories [default: %default]")
     parser.add_option("-n", dest="files",type="int" ,default=100,
                       help="number of files in each level [default: %default]")
-    parser.add_option("-l", dest="flen",type="int" ,default=10,
-                      help="number of bytes for filename "
-                      "[default: %default]")
     parser.add_option("--size", action = "store",type="int",
                       help="size of the files to be used in KB")
     parser.add_option("--random",  action="store_true", default=True,
@@ -132,14 +125,23 @@ if __name__ == '__main__':
     parser.add_option("--min", action = "store",type="int", default=10,
                       help="minimum size(KB) of the files, if random is True "
                       "[default: %default]" )
-    parser.add_option("--text", action="store_true", dest="file_type",default=True,
-                      help="create text files [default: %default]" )
-    parser.add_option("--sparse", action="store_false",dest="file_type",
-                      help="create sparse files ")
     parser.add_option("--single", action="store_true", dest="dir",default=True,
                       help="create files in single directory [default: %default]" )
     parser.add_option("--multi", action="store_false", dest="dir",
                       help="create files in multiple directories")
+    parser.add_option("-b", dest="brdth",type="int",default=5,
+                      help="number of directories in one level(works with --multi)[default: %default]")
+    parser.add_option("-d", dest="depth",type="int",default=5,
+                      help="number of levels of directories(works with --multi)[default: %default]")
+    parser.add_option("-l", dest="flen",type="int" ,default=10,
+                      help="number of bytes for filename "
+                      "[default: %default]")
+    parser.add_option("--text", action="store_true", dest="file_type",default=True,
+                      help="create text files [default: %default]" )
+    parser.add_option("--sparse", action="store_false",dest="file_type",
+                      help="create sparse files ")
+    parser.add_option("-I", dest="inter", type="int", default=100,
+                      help="print number files created of interval [defailt: %dafault]")
     (option,args) = parser.parse_args()
     if not args:
         print "usage: <script> [option] <MNT_PT>"
@@ -150,3 +152,4 @@ if __name__ == '__main__':
         singledir(args[0], option.files)
     else:
         multipledir(args[0], option.brdth, option.depth, option.files)
+    print "creation of files completed.\n"
