@@ -40,9 +40,9 @@ over different layout.
 	       all the filenames will be of 10+10=20 bytes.
 	       Otherwise it will be (10+ l)bytes.
 
-  --text       create text files. [default: True]
+  -t --type    type of the file to be created.(text, sparse, binary).
 
-  --sparse     create sparse files.
+  -I INTER     print number files created of interval.
 
 ==EXAMPLES
 
@@ -53,7 +53,7 @@ over different layout.
 	    first 10 bytes will be current time, next 10 bytes will be
 	    combination of letters(A-Z) and numbers(1-9)]
 
-  ./crefi --multi -b 10 -d 10 -n 1000 --sparse --size=100 MNT_PT
+  ./crefi --multi -b 10 -d 10 -n 1000 --type=sparse --size=100 MNT_PT
 
 	  # Create files in directory MNT_PT in the directory
 	    layout of 10 directories in each level, and 10 directories

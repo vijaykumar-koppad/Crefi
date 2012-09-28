@@ -31,6 +31,16 @@ def create_sparse_file(fil):
     os_wr(fil, data)
     return
 
+def create_binary_file(fil):
+    if option.size:
+        option.random = False
+        size = option.size
+    else:
+        size = random.randint(option.min, option.max)
+    data = os_rd("/dev/urandom", size*1024)
+    os_wr(fil, data)
+    return
+
 def create_txt_file(fil):
     if option.size:
         option.random = False
@@ -75,6 +85,15 @@ def sparse_files(files, file_count):
         file_count += 1
     return file_count
 
+def binary_files(files, file_count):
+    for k in range(files):
+        if not file_count%option.inter:
+            print file_count
+        fil = get_filename()
+        create_binary_file(fil)
+        file_count += 1
+    return file_count
+
 def multipledir(mnt_pnt,brdth,depth,files):
     files_count = 1
     for i in range(brdth):
@@ -95,19 +114,28 @@ def multipledir(mnt_pnt,brdth,depth,files):
                 if not ex.errno is errno.EEXIST:
                     raise
             os.chdir(dir_depth)
-            if option.file_type:
+            if option.file_type == "text":
                 files_count = text_files(files, files_count)
-            else:
+            elif option.file_type == "sparse":
                 files_count = sparse_files(files, files_count)
+            elif option.file_type == "binary":
+                files_count = binary_files(files, files_count)
+            else:
+                print "Not a valid file type"
+                sys.exit(1)
 
 def singledir(mnt_pnt, files):
     files_count = 1
     os.chdir(mnt_pnt)
-    if option.file_type:
+    if option.file_type == "text":
         files_count = text_files(files, files_count)
-    else:
+    elif option.file_type == "sparse":
         files_count = sparse_files(files, files_count)
-
+    elif option.file_type == "binary":
+        files_count = binary_files(files, files_count)
+    else:
+        print "Not a valid file type"
+        sys.exit(1)
 
 if __name__ == '__main__':
     usage = "usage: %prog [option] <MNT_PT>"
@@ -136,10 +164,8 @@ if __name__ == '__main__':
     parser.add_option("-l", dest="flen",type="int" ,default=10,
                       help="number of bytes for filename "
                       "[default: %default]")
-    parser.add_option("--text", action="store_true", dest="file_type",default=True,
-                      help="create text files [default: %default]" )
-    parser.add_option("--sparse", action="store_false",dest="file_type",
-                      help="create sparse files ")
+    parser.add_option("-t","--type", action="store", type="string" , dest="file_type",default="text",
+                      help="type of the file to be created (text, sparse, binary) [default: %default]" )
     parser.add_option("-I", dest="inter", type="int", default=100,
                       help="print number files created of interval [defailt: %dafault]")
     (option,args) = parser.parse_args()
