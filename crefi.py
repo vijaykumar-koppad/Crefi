@@ -3,6 +3,7 @@
 from __future__ import with_statement
 import sys
 import os
+import re
 import random
 from optparse import OptionParser
 import time
@@ -27,7 +28,7 @@ def create_sparse_file(fil):
         size = option.size
     else:
         size = random.randint(option.min, option.max)
-    data = os_rd("/dev/zero", size*1024)
+    data = os_rd("/dev/zero", size)
     os_wr(fil, data)
     return
 
@@ -37,7 +38,7 @@ def create_binary_file(fil):
         size = option.size
     else:
         size = random.randint(option.min, option.max)
-    data = os_rd("/dev/urandom", size*1024)
+    data = os_rd("/dev/urandom", size)
     os_wr(fil, data)
     return
 
@@ -47,8 +48,8 @@ def create_txt_file(fil):
         size = option.size
     else:
         size = random.randint(option.min, option.max)
-    if size < 500:
-        data = os_rd("/etc/services", size*1024)
+    if size < 500*1024:
+        data = os_rd("/etc/services", size)
         os_wr(fil, data)
     else:
         data = os_rd("/etc/services", 500*1024)
@@ -56,7 +57,7 @@ def create_txt_file(fil):
         fd = os.open(fil,os.O_WRONLY|os.O_CREAT|os.O_EXCL, 0644)
         while file_size < size:
             os.write(fd, data)
-            file_size += 500
+            file_size += 500*1024
         os.close(fd)
     return
 
@@ -93,6 +94,22 @@ def binary_files(files, file_count):
         create_binary_file(fil)
         file_count += 1
     return file_count
+
+def human2bytes(size):
+    size_short = {
+        1024 : ['K','KB','KiB','k','kB','kiB'],
+        1024*1024 : ['M','MB','MiB'],
+        1024*1024*1024 : ['G','GB','GiB']
+}
+    num = re.search('(\d+)',size).group()
+    ext = size[len(num):]
+    num = int(num)
+    if ext == '':
+        return num
+    for value, keys in size_short.items():
+        if ext in keys:
+            size = num*value
+            return size
 
 def multipledir(mnt_pnt,brdth,depth,files):
     files_count = 1
@@ -142,16 +159,16 @@ if __name__ == '__main__':
     parser = OptionParser(usage=usage)
     parser.add_option("-n", dest="files",type="int" ,default=100,
                       help="number of files in each level [default: %default]")
-    parser.add_option("--size", action = "store",type="int",
-                      help="size of the files to be used in KB")
+    parser.add_option("--size", action = "store",type="string",
+                      help="size of the files to be used")
     parser.add_option("--random",  action="store_true", default=True,
                       help="random size of the file between --min and --max "
                       "[default: %default]")
-    parser.add_option("--max", action = "store",type="int", default=500,
-                      help="maximum size(KB) of the files, if random is True "
+    parser.add_option("--max", action = "store",type="string", default="500K",
+                      help="maximum size of the files, if random is True "
                       "[default: %default]")
-    parser.add_option("--min", action = "store",type="int", default=10,
-                      help="minimum size(KB) of the files, if random is True "
+    parser.add_option("--min", action = "store",type="string", default="10K",
+                      help="minimum size of the files, if random is True "
                       "[default: %default]" )
     parser.add_option("--single", action="store_true", dest="dir",default=True,
                       help="create files in single directory [default: %default]" )
@@ -174,6 +191,11 @@ if __name__ == '__main__':
         print ""
         sys.exit(1)
     args[0] = os.path.abspath(args[0])
+    if option.size:
+        option.size = human2bytes(option.size)
+    else:
+        option.max = human2bytes(option.max)
+        option.min = human2bytes(option.min)
     if option.dir:
         singledir(args[0], option.files)
     else:
