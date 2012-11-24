@@ -114,17 +114,9 @@ def human2bytes(size):
 def multipledir(mnt_pnt,brdth,depth,files):
     files_count = 1
     for i in range(brdth):
-        breadth = mnt_pnt+"/"+str(i)
-        try:
-           os.makedirs(breadth)
-        except OSError as ex:
-            if not ex.errno is errno.EEXIST:
-                raise
-        os.chdir(breadth)
-        dir_depth = breadth
-        print breadth
+        dir_depth = mnt_pnt
         for j in range(depth):
-            dir_depth = dir_depth+"/"+str(j)
+            dir_depth = dir_depth+"/"+"level"+str(j)+str(i)
             try:
                 os.makedirs(dir_depth)
             except OSError as ex:
