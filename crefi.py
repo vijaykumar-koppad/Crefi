@@ -10,6 +10,7 @@ import time
 import string
 import errno
 import logging
+import tarfile
 datsiz = 0
 timr = 0
 
@@ -72,13 +73,26 @@ def create_txt_file(fil,size,mins,maxs,rand):
         data = os_rd("/etc/services", size)
         os_wr(fil, data)
     else:
-        data = os_rd("/etc/services", 500*1024)
+        data = os_rd("/etc/services", 512*1024)
         file_size = 0
         fd = os.open(fil,os.O_WRONLY|os.O_CREAT|os.O_EXCL, 0644)
         while file_size < size:
             os.write(fd, data)
             file_size += 500*1024
         os.close(fd)
+    return
+
+def create_tar_file(fil,size,mins,maxs,rand):
+    if rand:
+        size = random.randint(mins, maxs)
+    else:
+        size = size
+    data = os_rd("/dev/urandom", size)
+    os_wr(fil, data)
+    tar = tarfile.open(fil+".tar.gz","w:gz")
+    tar.add(fil)
+    tar.close()
+    os.unlink(fil)
     return
 
 def get_filename(flen):
@@ -122,6 +136,18 @@ def binary_files(files, file_count,inter,size,mins,maxs,rand,flen,randname):
         else:
             fil = get_filename(flen)
         create_binary_file(fil,size,mins,maxs,rand)
+        file_count += 1
+    return file_count
+
+def tar_files(files, file_count,inter,size,mins,maxs,rand,flen,randname):
+    for k in range(files):
+        if not file_count%inter:
+            logger.info("Total files created -- "+str(file_count))
+        if not randname:
+            fil = "file"+str(k)
+        else:
+            fil = get_filename(flen)
+        create_tar_file(fil,size,mins,maxs,rand)
         file_count += 1
     return file_count
 
@@ -246,6 +272,8 @@ def multipledir(mnt_pnt,brdth,depth,files,fop, file_type="text",inter="1000", si
                     files_count = sparse_files(files, files_count,inter,size,mins,maxs,rand,l,randname)
                 elif file_type == "binary":
                     files_count = binary_files(files, files_count,inter,size,mins,maxs,rand,l,randname)
+                elif file_type == "tar":
+                    files_count = tar_files(files, files_count,inter,size,mins,maxs,rand,l,randname)
                 else:
                     logger.error("Not a valid file type")
                     sys.exit(1)
@@ -288,6 +316,8 @@ def singledir(mnt_pnt, files, fop, file_type="text",inter="1000", size="100K",mi
             files_count = sparse_files(files, files_count,inter,size,mins,maxs,rand,l,randname)
         elif file_type == "binary":
             files_count = binary_files(files, files_count,inter,size,mins,maxs,rand,l,randname)
+        elif file_type == "tar":
+            files_count = tar_files(files, files_count,inter,size,mins,maxs,rand,l,randname)
         else:
             logger.info("Not a valid file type")
             sys.exit(1)
