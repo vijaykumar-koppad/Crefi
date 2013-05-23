@@ -181,6 +181,37 @@ def chmod_files(files,flen,randname):
             os.chmod(fil,int(mod))
     return
 
+
+def chown_files(files,flen,randname):
+    if not randname:
+        for k in range(files):
+            u = random.randint(1025,65536)
+            g = -1
+            os.chown("file"+str(k),u,g)
+    else:
+        dirs = os.listdir('.')
+        for fil in dirs:
+            u = random.randint(1025,65536)
+            g = -1
+            os.chown(fil,u,g)
+    return
+
+
+def chgrp_files(files,flen,randname):
+    if not randname:
+        for k in range(files):
+            g = random.randint(1025,65536)
+            u = -1
+            os.chown("file"+str(k),u,g)
+    else:
+        dirs = os.listdir('.')
+        for fil in dirs:
+            g = random.randint(1025,65536)
+            u = -1
+            os.chown(fil,u,g)
+    return
+
+
 def symlink_files(files,flen,randname):
     try:
         os.makedirs("symlink_to_files")
@@ -282,10 +313,22 @@ def multipledir(mnt_pnt,brdth,depth,files,fop, file_type="text",inter="1000", si
                 logger.info("Started renaming files for the files 0 to "+str(files)+" in the directory level"+str(j)+str(i)+" ...")
                 rename_files(files,l,randname)
                 logger.info("Finished renaming files for the files 0 to "+str(files)+" in the directory level"+str(j)+str(i))
+
             elif fop == "chmod":
                 logger.info("Started changing permission of files for the files 0 to "+str(files)+" in the directory level"+str(j)+str(i)+" ...")
                 chmod_files(files,l,randname)
                 logger.info("Finished changing permission of files for the files 0 to "+str(files)+" in the directory level"+str(j)+str(i))
+
+            elif fop == "chown":
+                logger.info("Started changing ownership of files for the files 0 to "+str(files)+" in the directory level"+str(j)+str(i)+" ...")
+                chown_files(files,l,randname)
+                logger.info("Finished changing ownership of files for the files 0 to "+str(files)+" in the directory level"+str(j)+str(i))
+
+            elif fop == "chgrp":
+                logger.info("Started changing group ownership of files for the files 0 to "+str(files)+" in the directory level"+str(j)+str(i)+" ...")
+                chgrp_files(files,l,randname)
+                logger.info("Finished changing group ownership of files for the files 0 to "+str(files)+" in the directory level"+str(j)+str(i))
+
             elif fop == "symlink":
                 logger.info("Started creating symlink to the files 0 to "+str(files)+" in the directory level"+str(j)+str(i)+"...")
                 symlink_files(files,l,randname)
@@ -322,17 +365,28 @@ def singledir(mnt_pnt, files, fop, file_type="text",inter="1000", size="100K",mi
             logger.info("Not a valid file type")
             sys.exit(1)
         thrpt = datsiz / timr
-        print datsiz , timr
         logger.info("finished creating files with avg throughput ---- "+bytes2human(thrpt)+"ps")
 
     elif fop == "rename":
         logger.info("Started renaming files for the files 0 to "+str(files)+"...")
         rename_files(files,l,randname)
         logger.info("Finished renaming files for the files 0 to "+str(files))
+
     elif fop == "chmod":
         logger.info("Started changing permission of files for the files 0 to "+str(files)+"...")
         chmod_files(files,l,randname)
         logger.info("Finished changing permission of files for the files 0 to "+str(files))
+
+    elif fop == "chown":
+        logger.info("Started changing ownership of files for the files 0 to "+str(files)+"...")
+        chown_files(files,l,randname)
+        logger.info("Finished changing ownership of files for the files 0 to "+str(files))
+
+    elif fop == "chgrp":
+        logger.info("Started changing group ownership of files for the files 0 to "+str(files)+"...")
+        chgrp_files(files,l,randname)
+        logger.info("Finished changing group ownership of files for the files 0 to "+str(files))
+
     elif fop == "symlink":
         logger.info("Started creating symlink to the files 0 to "+str(files)+"...")
         symlink_files(files,l,randname)
@@ -373,11 +427,11 @@ if __name__ == '__main__':
                       help="number of bytes for filename ( Used only when randname is enabled) "
                       "[default: %default]")
     parser.add_option("-t","--type", action="store", type="string" , dest="file_type",default="text",
-                      help="type of the file to be created (text, sparse, binary) [default: %default]" )
+                      help="type of the file to be created (text, sparse, binary, tar) [default: %default]" )
     parser.add_option("-I", dest="inter", type="int", default=100,
-                      help="print number files created of interval [defailt: %dafault]")
+                      help="print number files created of interval [defailt: %default]")
     parser.add_option("--fop", action="store", type="string", dest="fop", default="create",
-                      help="fop to be performed on the files ( create,rename,chmod,symlink,hardlink) [default: %default]")
+                      help="fop to be performed on the files ( create,rename,chmod,chown,chgrp,symlink,hardlink) [default: %default]")
     parser.add_option("-R", dest="randname", action="store_false", default=True,
                        help="To disable random file name [default: Enabled]")
 
