@@ -163,6 +163,23 @@ def rename_files(files,flen,randname):
                 os.rename(fil,newfil)
     return
 
+
+def truncate_files(files,mins,maxs,randname):
+    if not randname:
+        for k in range(files):
+            byts = random.randint(mins,maxs)
+            fd = os.open("file"+str(k), os.O_WRONLY)
+            os.ftruncate(fd,byts)
+    else:
+        dirs = os.listdir('.')
+        for fil in dirs:
+            if not os.path.isdir(fil):
+                byts = random.randint(mins,maxs)
+                fd = os.open(fil, os.O_WRONLY)
+                os.ftruncate(fd,byts)
+    return
+
+
 def chmod_files(files,flen,randname):
     if not randname:
         for k in range(files):
@@ -339,6 +356,11 @@ def multipledir(mnt_pnt,brdth,depth,files,fop, file_type="text",inter="1000", si
                 hardlink_files(files,l,randname)
                 logger.info("Finished creating hardlink to the files 0 to "+str(files)+" in the directory level"+str(j)+str(i))
 
+            elif fop == "truncate":
+                logger.info("Started creating hardlink to the files 0 to "+str(files)+" in the directory level"+str(j)+str(i)+"...")
+                truncate_files(files,mins,maxs,randname)
+                logger.info("Finished creating hardlink to the files 0 to "+str(files)+" in the directory level"+str(j)+str(i))
+
     if fop == "create":
         thrpt = datsiz / timr
         logger.info("finished creating files with throughput ---- "+ bytes2human(thrpt)+"ps")
@@ -397,6 +419,10 @@ def singledir(mnt_pnt, files, fop, file_type="text",inter="1000", size="100K",mi
         hardlink_files(files,l,randname)
         logger.info("Finished creating hardlink to the files 0 to "+str(files))
 
+    elif fop == "truncate":
+        logger.info("Started creating hardlink to the files 0 to "+str(files)+"...")
+        truncate_files(files,mins,maxs,randname)
+        logger.info("Finished creating hardlink to the files 0 to "+str(files))
 
 
 if __name__ == '__main__':
@@ -431,7 +457,7 @@ if __name__ == '__main__':
     parser.add_option("-I", dest="inter", type="int", default=100,
                       help="print number files created of interval [defailt: %default]")
     parser.add_option("--fop", action="store", type="string", dest="fop", default="create",
-                      help="fop to be performed on the files ( create,rename,chmod,chown,chgrp,symlink,hardlink) [default: %default]")
+                      help="fop to be performed on the files ( create,rename,chmod,chown,chgrp,symlink,hardlink,truncate) [default: %default]")
     parser.add_option("-R", dest="randname", action="store_false", default=True,
                        help="To disable random file name [default: Enabled]")
 
