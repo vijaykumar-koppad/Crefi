@@ -170,6 +170,7 @@ def truncate_files(files,mins,maxs,randname):
             byts = random.randint(mins,maxs)
             fd = os.open("file"+str(k), os.O_WRONLY)
             os.ftruncate(fd,byts)
+            os.close(fd)
     else:
         dirs = os.listdir('.')
         for fil in dirs:
@@ -177,6 +178,7 @@ def truncate_files(files,mins,maxs,randname):
                 byts = random.randint(mins,maxs)
                 fd = os.open(fil, os.O_WRONLY)
                 os.ftruncate(fd,byts)
+                os.close(fd)
     return
 
 
