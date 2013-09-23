@@ -185,19 +185,13 @@ def truncate_files(files,mins,maxs,randname):
 def chmod_files(files,flen,randname):
     if not randname:
         for k in range(files):
-            r=random.randint(0,7)
-            u=random.randint(0,7)
-            g=random.randint(0,7)
-            mod=str(r)+str(u)+str(g)
-            os.chmod("file"+str(k),int(mod))
+            mod=random.randint(0,511)
+            os.chmod("file"+str(k),mod)
     else:
         dirs = os.listdir('.')
         for fil in dirs:
-            r=random.randint(0,7)
-            u=random.randint(0,7)
-            g=random.randint(0,7)
-            mod=str(r)+str(u)+str(g)
-            os.chmod(fil,int(mod))
+            mod=random.randint(0,511)
+            os.chmod(fil,mod)
     return
 
 
