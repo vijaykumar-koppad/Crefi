@@ -353,9 +353,9 @@ def multipledir(mnt_pnt,brdth,depth,files,fop, file_type="text",inter="1000", si
                 logger.info("Finished creating hardlink to the files 0 to "+str(files)+" in the directory level"+str(j)+str(i))
 
             elif fop == "truncate":
-                logger.info("Started creating hardlink to the files 0 to "+str(files)+" in the directory level"+str(j)+str(i)+"...")
+                logger.info("Started truncating the files 0 to "+str(files)+" in the directory level"+str(j)+str(i)+"...")
                 truncate_files(files,mins,maxs,randname)
-                logger.info("Finished creating hardlink to the files 0 to "+str(files)+" in the directory level"+str(j)+str(i))
+                logger.info("Finished truncating the files 0 to "+str(files)+" in the directory level"+str(j)+str(i))
 
     if fop == "create":
         thrpt = datsiz / timr
@@ -416,9 +416,9 @@ def singledir(mnt_pnt, files, fop, file_type="text",inter="1000", size="100K",mi
         logger.info("Finished creating hardlink to the files 0 to "+str(files))
 
     elif fop == "truncate":
-        logger.info("Started creating hardlink to the files 0 to "+str(files)+"...")
+        logger.info("Started truncating the files 0 to "+str(files)+"...")
         truncate_files(files,mins,maxs,randname)
-        logger.info("Finished creating hardlink to the files 0 to "+str(files))
+        logger.info("Finished truncating the files 0 to "+str(files))
 
 
 if __name__ == '__main__':
