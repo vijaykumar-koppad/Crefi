@@ -9,8 +9,7 @@ over different layout.
 
   -n FILES     number of files in each level [default: 100]
 
-  --size=SIZE  size of the files to be used.
-	       By default random sizes are taken.
+  --size=SIZE  size of the files to be used [default: 100k]
 
   --random     random size of the file between --min and --max [default: True]
 	       default random sizes of the files will be between 10k and 500K.
@@ -42,7 +41,12 @@ over different layout.
 
   -t --type    type of the file to be created.(text, sparse, binary).
 
-  -I INTER     print number files created of interval.
+  -I INTER     print number files created of interval. [defailt: 100]
+  
+  --fop=FOP    fop to be performed on the files ( create,rename,chmod,
+               chown,chgrp,symlink,hardlink,truncate) [default:create]
+ 
+  -R           To disable random file name [default: Enabled]
 
 ==EXAMPLES
 
