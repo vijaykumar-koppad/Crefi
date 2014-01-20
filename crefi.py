@@ -101,7 +101,7 @@ def get_filename(flen):
     char = string.uppercase+string.digits
     st = ''.join(random.choice(char) for i in range(size))
     ti = str((hex(int(str(time.time()).split('.')[0])))[2:])
-    return ti+"##"+st
+    return ti+"%%"+st
 
 def text_files(files, file_count,inter,size,mins,maxs,rand,flen,randname):
     global datsiz,timr
