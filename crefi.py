@@ -11,6 +11,7 @@ import string
 import errno
 import logging
 import tarfile
+import xattr
 datsiz = 0
 timr = 0
 
@@ -100,7 +101,7 @@ def get_filename(flen):
     char = string.uppercase+string.digits
     st = ''.join(random.choice(char) for i in range(size))
     ti = str((hex(int(str(time.time()).split('.')[0])))[2:])
-    return ti+"~~"+st
+    return ti+"##"+st
 
 def text_files(files, file_count,inter,size,mins,maxs,rand,flen,randname):
     global datsiz,timr
@@ -150,6 +151,24 @@ def tar_files(files, file_count,inter,size,mins,maxs,rand,flen,randname):
         create_tar_file(fil,size,mins,maxs,rand)
         file_count += 1
     return file_count
+
+
+def setxattr_files(files,randname):
+    char = string.uppercase+string.digits
+    if not randname:
+        for k in range(files):
+            v = ''.join(random.choice(char) for i in range(10))
+            n = "user."+v
+            xattr.setxattr("file"+str(k),n,v)
+    else:
+        dirs = os.listdir('.')
+        for fil in dirs:
+            v = ''.join(random.choice(char) for i in range(10))
+            n = "user."+v
+            xattr.setxattr(fil,n,v)
+    return
+
+
 
 def rename_files(files,flen,randname):
     if not randname:
@@ -357,6 +376,11 @@ def multipledir(mnt_pnt,brdth,depth,files,fop, file_type="text",inter="1000", si
                 truncate_files(files,mins,maxs,randname)
                 logger.info("Finished truncating the files 0 to "+str(files)+" in the directory level"+str(j)+str(i))
 
+            elif fop == "setxattr":
+                logger.info("Started setxattr to the files 0 to "+str(files)+" in the directory level"+str(j)+str(i)+"...")
+                setxattr_files(files,randname)
+                logger.info("Finished setxattr to the files 0 to "+str(files)+" in the directory level"+str(j)+str(i))
+
     if fop == "create":
         thrpt = datsiz / timr
         logger.info("finished creating files with throughput ---- "+ bytes2human(thrpt)+"ps")
@@ -420,6 +444,11 @@ def singledir(mnt_pnt, files, fop, file_type="text",inter="1000", size="100K",mi
         truncate_files(files,mins,maxs,randname)
         logger.info("Finished truncating the files 0 to "+str(files))
 
+    elif fop == "setxattr":
+        logger.info("Started setxattr to the files 0 to "+str(files)+"...")
+        setxattr_files(files,randname)
+        logger.info("Finished setxattr to the files 0 to "+str(files))
+
 
 if __name__ == '__main__':
     usage = "usage: %prog [option] <MNT_PT>"
@@ -453,7 +482,7 @@ if __name__ == '__main__':
     parser.add_option("-I", dest="inter", type="int", default=100,
                       help="print number files created of interval [defailt: %default]")
     parser.add_option("--fop", action="store", type="string", dest="fop", default="create",
-                      help="fop to be performed on the files ( create,rename,chmod,chown,chgrp,symlink,hardlink,truncate) [default: %default]")
+                      help="fop to be performed on the files ( create,rename,chmod,chown,chgrp,symlink,hardlink,truncate,setxattr) [default: %default]")
     parser.add_option("-R", dest="randname", action="store_false", default=True,
                        help="To disable random file name [default: Enabled]")
 
