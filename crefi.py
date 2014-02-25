@@ -103,51 +103,51 @@ def get_filename(flen):
     ti = str((hex(int(str(time.time()).split('.')[0])))[2:])
     return ti+"%%"+st
 
-def text_files(files, file_count,inter,size,mins,maxs,rand,flen,randname):
+def text_files(files, file_count,inter,size,mins,maxs,rand,flen,randname,dir_path):
     global datsiz,timr
     for k in range(files):
         if not file_count%inter:
             logger.info("Total files created -- "+str(file_count))
         if not randname:
-            fil = "file"+str(k)
+            fil = dir_path+"/"+"file"+str(k)
         else:
-            fil = get_filename(flen)
+            fil = dir_path+"/"+get_filename(flen)
         create_txt_file(fil,size,mins,maxs,rand)
         file_count += 1
     return file_count
 
-def sparse_files(files, file_count,inter,size,mins,maxs,rand,flen,randname):
+def sparse_files(files, file_count,inter,size,mins,maxs,rand,flen,randname,dir_path):
     for k in range(files):
         if not file_count%inter:
             logger.info("Total files created -- "+str(file_count))
         if not randname:
-            fil = "file"+str(k)
+            fil = dir_path+"/"+"file"+str(k)
         else:
-            fil = get_filename(flen)
+            fil = dir_path+"/"+get_filename(flen)
         create_sparse_file(fil,size,mins,maxs,rand)
         file_count += 1
     return file_count
 
-def binary_files(files, file_count,inter,size,mins,maxs,rand,flen,randname):
+def binary_files(files, file_count,inter,size,mins,maxs,rand,flen,randname,dir_path):
     for k in range(files):
         if not file_count%inter:
             logger.info("Total files created -- "+str(file_count))
         if not randname:
-            fil = "file"+str(k)
+            fil = dir_path+"/"+"file"+str(k)
         else:
-            fil = get_filename(flen)
+            fil = dir_path+"/"+get_filename(flen)
         create_binary_file(fil,size,mins,maxs,rand)
         file_count += 1
     return file_count
 
-def tar_files(files, file_count,inter,size,mins,maxs,rand,flen,randname):
+def tar_files(files, file_count,inter,size,mins,maxs,rand,flen,randname,dir_path):
     for k in range(files):
         if not file_count%inter:
             logger.info("Total files created -- "+str(file_count))
         if not randname:
-            fil = "file"+str(k)
+            fil = dir_path+"/"+"file"+str(k)
         else:
-            fil = get_filename(flen)
+            fil = dir_path+"/"+get_filename(flen)
         create_tar_file(fil,size,mins,maxs,rand)
         file_count += 1
     return file_count
@@ -318,25 +318,25 @@ def multipledir(mnt_pnt,brdth,depth,files,fop, file_type="text",inter="1000", si
     maxs = human2bytes(maxs)
     mins = human2bytes(mins)
     for i in range(brdth):
-        dir_depth = mnt_pnt
+        dir_path = mnt_pnt
         for j in range(depth):
-            dir_depth = dir_depth+"/"+"level"+str(j)+str(i)
+            dir_path = dir_path+"/"+"level"+str(j)+str(i)
             try:
-                os.makedirs(dir_depth)
+                os.makedirs(dir_path)
             except OSError as ex:
                 if not ex.errno is errno.EEXIST:
                     raise
-            os.chdir(dir_depth)
+
             if fop == "create":
                 logger.info("Entering the directory level"+str(j)+str(i))
                 if file_type == "text":
-                    files_count = text_files(files, files_count,inter,size,mins,maxs,rand,l,randname)
+                    files_count = text_files(files, files_count,inter,size,mins,maxs,rand,l,randname,dir_path)
                 elif file_type == "sparse":
-                    files_count = sparse_files(files, files_count,inter,size,mins,maxs,rand,l,randname)
+                    files_count = sparse_files(files, files_count,inter,size,mins,maxs,rand,l,randname,dir_path)
                 elif file_type == "binary":
-                    files_count = binary_files(files, files_count,inter,size,mins,maxs,rand,l,randname)
+                    files_count = binary_files(files, files_count,inter,size,mins,maxs,rand,l,randname,dir_path)
                 elif file_type == "tar":
-                    files_count = tar_files(files, files_count,inter,size,mins,maxs,rand,l,randname)
+                    files_count = tar_files(files, files_count,inter,size,mins,maxs,rand,l,randname,dir_path)
                 else:
                     logger.error("Not a valid file type")
                     sys.exit(1)
