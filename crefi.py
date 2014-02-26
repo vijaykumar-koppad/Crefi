@@ -159,126 +159,124 @@ def setxattr_files(files,randname):
         for k in range(files):
             v = ''.join(random.choice(char) for i in range(10))
             n = "user."+v
-            xattr.setxattr("file"+str(k),n,v)
+            xattr.setxattr(dir_path+"/"+"file"+str(k),n,v)
     else:
-        dirs = os.listdir('.')
+        dirs = os.listdir(dir_path+"/")
         for fil in dirs:
             v = ''.join(random.choice(char) for i in range(10))
             n = "user."+v
-            xattr.setxattr(fil,n,v)
+            xattr.setxattr(dir_path+"/"+fil,n,v)
     return
 
 
 
-def rename_files(files,flen,randname):
+def rename_files(files,flen,randname,dir_path):
     if not randname:
         for k in range(files):
-            os.rename("file"+str(k),"file"+str(files+k))
+            os.rename(dir_path+"/"+"file"+str(k),dir_path+"/"+"file"+str(files+k))
     else:
-        dirs = os.listdir('.')
+        dirs = os.listdir(dir_path)
         for fil in dirs:
             if not os.path.isdir(fil):
                 newfil=get_filename(flen)
-                os.rename(fil,newfil)
+                os.rename(dir_path+"/"+fil,dir_path+"/"+newfil)
     return
 
 
-def truncate_files(files,mins,maxs,randname):
+def truncate_files(files,mins,maxs,randname,dir_path):
     if not randname:
         for k in range(files):
             byts = random.randint(mins,maxs)
-            fd = os.open("file"+str(k), os.O_WRONLY)
+            fd = os.open(dir_path+"/"+"file"+str(k), os.O_WRONLY)
             os.ftruncate(fd,byts)
             os.close(fd)
     else:
-        dirs = os.listdir('.')
+        dirs = os.listdir(dir_path)
         for fil in dirs:
-            if not os.path.isdir(fil):
+            if not os.path.isdir(dir_path+"/"+fil):
                 byts = random.randint(mins,maxs)
-                fd = os.open(fil, os.O_WRONLY)
+                fd = os.open(dir_path+"/"+fil, os.O_WRONLY)
                 os.ftruncate(fd,byts)
                 os.close(fd)
     return
 
 
-def chmod_files(files,flen,randname):
+def chmod_files(files,flen,randname,dir_path):
     if not randname:
         for k in range(files):
             mod=random.randint(0,511)
-            os.chmod("file"+str(k),mod)
+            os.chmod(dir_path+"/"+"file"+str(k),mod)
     else:
-        dirs = os.listdir('.')
+        dirs = os.listdir(dir_path)
         for fil in dirs:
             mod=random.randint(0,511)
-            os.chmod(fil,mod)
+            os.chmod(dir_path+"/"+fil,mod)
     return
 
 
-def chown_files(files,flen,randname):
+def chown_files(files,flen,randname,dir_path):
     if not randname:
         for k in range(files):
             u = random.randint(1025,65536)
             g = -1
-            os.chown("file"+str(k),u,g)
+            os.chown(dir_path+"/"+"file"+str(k),u,g)
     else:
-        dirs = os.listdir('.')
+        dirs = os.listdir(dir_path)
         for fil in dirs:
             u = random.randint(1025,65536)
             g = -1
-            os.chown(fil,u,g)
+            os.chown(dir_path+"/"+fil,u,g)
     return
 
 
-def chgrp_files(files,flen,randname):
+def chgrp_files(files,flen,randname,dir_path):
     if not randname:
         for k in range(files):
             g = random.randint(1025,65536)
             u = -1
-            os.chown("file"+str(k),u,g)
+            os.chown(dir_path+"/"+"file"+str(k),u,g)
     else:
-        dirs = os.listdir('.')
+        dirs = os.listdir(dir_path)
         for fil in dirs:
             g = random.randint(1025,65536)
             u = -1
-            os.chown(fil,u,g)
+            os.chown(dir_path+"/"+fil,u,g)
     return
 
 
-def symlink_files(files,flen,randname):
+def symlink_files(files,flen,randname,dir_path):
     try:
-        os.makedirs("symlink_to_files")
+        os.makedirs(dir_path+"/"+"symlink_to_files")
     except OSError as ex:
         if not ex.errno is errno.EEXIST:
             raise
     if not randname:
         for k in range(files):
-            src_file = os.path.abspath("file"+str(k))
-            os.symlink(src_file,"symlink_to_files/file"+str(k)+"_sym")
+            src_file = "file"+str(k)
+            os.symlink(dir_path+"/"+src_file,dir_path+"/"+"symlink_to_files/file"+str(k)+"_sym")
     else:
-        dirs = os.listdir('.')
+        dirs = os.listdir(dir_path)
         for fil in dirs:
             newfil = get_filename(flen)
-            src_file = os.path.abspath(fil)
-            os.symlink(src_file,"symlink_to_files/"+newfil)
+            os.symlink(dir_path+"/"+fil,dir_path+"/"+"symlink_to_files/"+newfil)
     return
 
-def hardlink_files(files,flen,randname):
+def hardlink_files(files,flen,randname,dir_path):
     try:
-        os.makedirs("hardlink_to_files")
+        os.makedirs(dir_path+"/"+"hardlink_to_files")
     except OSError as ex:
         if not ex.errno is errno.EEXIST:
             raise
     if not randname:
         for k in range(files):
-            src_file = os.path.abspath("file"+str(k))
-            os.link(src_file,"hardlink_to_files/file"+str(k)+"_hard")
+            src_file ="file"+str(k)
+            os.link(dir_path+"/"+src_file,dir_path+"/"+"hardlink_to_files/file"+str(k)+"_hard")
     else:
-        dirs = os.listdir('.')
+        dirs = os.listdir(dir_path)
         for fil in dirs:
-            if not os.path.isdir(fil):
+            if not os.path.isdir(dir_path+"/"+fil):
                 newfil = get_filename(flen)
-                src_file = os.path.abspath(fil)
-                os.link(src_file,"hardlink_to_files/"+newfil)
+                os.link(dir_path+"/"+fil,dir_path+"/"+"hardlink_to_files/"+newfil)
     return
 
 def human2bytes(size):
@@ -343,42 +341,42 @@ def multipledir(mnt_pnt,brdth,depth,files,fop, file_type="text",inter="1000", si
 
             elif fop == "rename":
                 logger.info("Started renaming files for the files 0 to "+str(files)+" in the directory level"+str(j)+str(i)+" ...")
-                rename_files(files,l,randname)
+                rename_files(files,l,randname,dir_path)
                 logger.info("Finished renaming files for the files 0 to "+str(files)+" in the directory level"+str(j)+str(i))
 
             elif fop == "chmod":
                 logger.info("Started changing permission of files for the files 0 to "+str(files)+" in the directory level"+str(j)+str(i)+" ...")
-                chmod_files(files,l,randname)
+                chmod_files(files,l,randname,dir_path)
                 logger.info("Finished changing permission of files for the files 0 to "+str(files)+" in the directory level"+str(j)+str(i))
 
             elif fop == "chown":
                 logger.info("Started changing ownership of files for the files 0 to "+str(files)+" in the directory level"+str(j)+str(i)+" ...")
-                chown_files(files,l,randname)
+                chown_files(files,l,randname,dir_path)
                 logger.info("Finished changing ownership of files for the files 0 to "+str(files)+" in the directory level"+str(j)+str(i))
 
             elif fop == "chgrp":
                 logger.info("Started changing group ownership of files for the files 0 to "+str(files)+" in the directory level"+str(j)+str(i)+" ...")
-                chgrp_files(files,l,randname)
+                chgrp_files(files,l,randname,dir_path)
                 logger.info("Finished changing group ownership of files for the files 0 to "+str(files)+" in the directory level"+str(j)+str(i))
 
             elif fop == "symlink":
                 logger.info("Started creating symlink to the files 0 to "+str(files)+" in the directory level"+str(j)+str(i)+"...")
-                symlink_files(files,l,randname)
+                symlink_files(files,l,randname,dir_path)
                 logger.info("Finished creating symlink to the files 0 to "+str(files)+" in the directory level"+str(j)+str(i))
 
             elif fop == "hardlink":
                 logger.info("Started creating hardlink to the files 0 to "+str(files)+" in the directory level"+str(j)+str(i)+"...")
-                hardlink_files(files,l,randname)
+                hardlink_files(files,l,randname,dir_path)
                 logger.info("Finished creating hardlink to the files 0 to "+str(files)+" in the directory level"+str(j)+str(i))
 
             elif fop == "truncate":
                 logger.info("Started truncating the files 0 to "+str(files)+" in the directory level"+str(j)+str(i)+"...")
-                truncate_files(files,mins,maxs,randname)
+                truncate_files(files,mins,maxs,randname,dir_path)
                 logger.info("Finished truncating the files 0 to "+str(files)+" in the directory level"+str(j)+str(i))
 
             elif fop == "setxattr":
                 logger.info("Started setxattr to the files 0 to "+str(files)+" in the directory level"+str(j)+str(i)+"...")
-                setxattr_files(files,randname)
+                setxattr_files(files,randname,dir_path)
                 logger.info("Finished setxattr to the files 0 to "+str(files)+" in the directory level"+str(j)+str(i))
 
     if fop == "create":
@@ -390,19 +388,18 @@ def multipledir(mnt_pnt,brdth,depth,files,fop, file_type="text",inter="1000", si
 def singledir(mnt_pnt, files, fop, file_type="text",inter="1000", size="100K",mins="10K",maxs="500K",rand=False,l=10, randname=False):
 
     files_count = 1
-    os.chdir(mnt_pnt)
     size = human2bytes(size)
     maxs = human2bytes(maxs)
     mins = human2bytes(mins)
     if fop == "create":
         if file_type == "text":
-            files_count = text_files(files, files_count,inter,size,mins,maxs,rand,l,randname)
+            files_count = text_files(files, files_count,inter,size,mins,maxs,rand,l,randname,mnt_pnt)
         elif file_type == "sparse":
-            files_count = sparse_files(files, files_count,inter,size,mins,maxs,rand,l,randname)
+            files_count = sparse_files(files, files_count,inter,size,mins,maxs,rand,l,randname,mnt_pnt)
         elif file_type == "binary":
-            files_count = binary_files(files, files_count,inter,size,mins,maxs,rand,l,randname)
+            files_count = binary_files(files, files_count,inter,size,mins,maxs,rand,l,randname,mnt_pnt)
         elif file_type == "tar":
-            files_count = tar_files(files, files_count,inter,size,mins,maxs,rand,l,randname)
+            files_count = tar_files(files, files_count,inter,size,mins,maxs,rand,l,randname,mnt_pnt)
         else:
             logger.info("Not a valid file type")
             sys.exit(1)
@@ -411,42 +408,42 @@ def singledir(mnt_pnt, files, fop, file_type="text",inter="1000", size="100K",mi
 
     elif fop == "rename":
         logger.info("Started renaming files for the files 0 to "+str(files)+"...")
-        rename_files(files,l,randname)
+        rename_files(files,l,randname,mnt_pnt)
         logger.info("Finished renaming files for the files 0 to "+str(files))
 
     elif fop == "chmod":
         logger.info("Started changing permission of files for the files 0 to "+str(files)+"...")
-        chmod_files(files,l,randname)
+        chmod_files(files,l,randname,mnt_pnt)
         logger.info("Finished changing permission of files for the files 0 to "+str(files))
 
     elif fop == "chown":
         logger.info("Started changing ownership of files for the files 0 to "+str(files)+"...")
-        chown_files(files,l,randname)
+        chown_files(files,l,randname,mnt_pnt)
         logger.info("Finished changing ownership of files for the files 0 to "+str(files))
 
     elif fop == "chgrp":
         logger.info("Started changing group ownership of files for the files 0 to "+str(files)+"...")
-        chgrp_files(files,l,randname)
+        chgrp_files(files,l,randname,mnt_pnt)
         logger.info("Finished changing group ownership of files for the files 0 to "+str(files))
 
     elif fop == "symlink":
         logger.info("Started creating symlink to the files 0 to "+str(files)+"...")
-        symlink_files(files,l,randname)
+        symlink_files(files,l,randname,mnt_pnt)
         logger.info("Finished creating symlink to the files 0 to "+str(files))
 
     elif fop == "hardlink":
         logger.info("Started creating hardlink to the files 0 to "+str(files)+"...")
-        hardlink_files(files,l,randname)
+        hardlink_files(files,l,randname,mnt_pnt)
         logger.info("Finished creating hardlink to the files 0 to "+str(files))
 
     elif fop == "truncate":
         logger.info("Started truncating the files 0 to "+str(files)+"...")
-        truncate_files(files,mins,maxs,randname)
+        truncate_files(files,mins,maxs,randname,mnt_pnt)
         logger.info("Finished truncating the files 0 to "+str(files))
 
     elif fop == "setxattr":
         logger.info("Started setxattr to the files 0 to "+str(files)+"...")
-        setxattr_files(files,randname)
+        setxattr_files(files,randname,mnt_pnt)
         logger.info("Finished setxattr to the files 0 to "+str(files))
 
 
