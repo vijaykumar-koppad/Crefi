@@ -1,9 +1,5 @@
 #!/usr/bin/python
 
-# This script was developed by Vijaykumar Koppad (vkoppad@redhat.com)
-# The latest version of this script can found at
-# http://github.com/vijaykumar-koppad/crefi
-
 from __future__ import with_statement
 import os
 import re
