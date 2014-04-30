@@ -54,7 +54,7 @@ def main():
 
     parser = argparse.ArgumentParser(formatter_class=argparse.
                                      ArgumentDefaultsHelpFormatter)
-    parser.add_argument('--version', action='version',
+    parser.add_argument('-V','--version', action='version',
         version='%(prog)s {version}'.format(version=__version__))
     parser.add_argument("-n", dest="files", type=int, default=100,
                         help="number of files in each level ")

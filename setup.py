@@ -12,6 +12,7 @@ setup(
     description = ("A tool to generate different IO's and create files" +
                    " on any mount point"),
     py_modules = ['crefi','crefi_helper','logger'],
+    requires = ["xattr"],
     entry_points = """
     [console_scripts]
     crefi = crefi:main
