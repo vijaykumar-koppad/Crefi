@@ -1,9 +1,8 @@
 #Crefi
 
 ###what is it?
-Crefi is a Python command-line tool to create files and do file operations on created data.
-It provides basic operations to create files of differrent
-sizes, in different layout, along with creating symlinks, hardlinks to files, and also rename, truncate, chmod, chown, chgrp and setxattr on the created files.
+Crefi is a Python command-line tool to create multi threaded workload on a filesystem and do file operations on created data.
+It provides basic operations to create files of different sizes, different types, in different directory structures, along with creating symlinks, hardlinks to files, and also rename, truncate, chmod, chown, chgrp and setxattr on the created files.
 
 Typical use involves creating large number of files of different sizes,
 over different layout, and do different operations on the created files.
