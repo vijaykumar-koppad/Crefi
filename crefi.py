@@ -10,10 +10,14 @@ from crefi_helper import singledir, multipledir
 
 def multiple(mnt_pnt, brdth, depth, files, fop, file_type="text", inter="1000",
              size="100K", mins="10K", maxs="500K", rand=False, l=10,
-             randname=False, threads=2):
+             randname=False, threads=1):
     threadlist = []
     for i in range(threads):
-        dir_path = mnt_pnt+"/"+"thread"+str(i)
+        print threads
+        if threads == 1:
+            dir_path = mnt_pnt
+        else:
+            dir_path = mnt_pnt+"/"+"thread"+str(i)
         try:
             os.makedirs(dir_path)
         except OSError as ex:
@@ -31,10 +35,13 @@ def multiple(mnt_pnt, brdth, depth, files, fop, file_type="text", inter="1000",
 
 def single(mnt_pnt, files, fop, file_type="text", inter="1000",
            size="100K", mins="10K", maxs="500K", rand=False, l=10,
-           randname=False, threads=2):
+           randname=False, threads=1):
     threadlist = []
     for i in range(threads):
-        dir_path = mnt_pnt+"/"+"thread"+str(i)
+        if threads == 1:
+            dir_path = mnt_pnt
+        else:
+            dir_path = mnt_pnt+"/"+"thread"+str(i)
         try:
             os.makedirs(dir_path)
         except OSError as ex:
@@ -54,8 +61,9 @@ def main():
 
     parser = argparse.ArgumentParser(formatter_class=argparse.
                                      ArgumentDefaultsHelpFormatter)
-    parser.add_argument('-V','--version', action='version',
-        version='%(prog)s {version}'.format(version=__version__))
+    parser.add_argument('-V', '--version', action='version',
+                        version='%(prog)s {version}'.
+                        format(version=__version__))
     parser.add_argument("-n", dest="files", type=int, default=100,
                         help="number of files in each level ")
     parser.add_argument("--size", action="store", default="100k",
@@ -94,7 +102,7 @@ def main():
                         default=True, help="To disable random file name " +
                         "(default: Enabled)")
     parser.add_argument("mntpnt", help="Mount point")
-    parser.add_argument("-T", dest="threads", type=int, default=2,
+    parser.add_argument("-T", dest="threads", type=int, default=1,
                         help="Number of threads used to create files")
 
     args = parser.parse_args()
