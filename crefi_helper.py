@@ -177,7 +177,7 @@ def rename_files(files, flen, randname, dir_path):
     else:
         dirs = os.listdir(dir_path)
         for fil in dirs:
-            if not os.path.isdir(fil):
+            if not os.path.isdir(dir_path + "/" + fil):
                 newfil = get_filename(flen)
                 os.rename(dir_path + "/" + fil,
                           dir_path + "/" + newfil)
