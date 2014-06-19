@@ -215,31 +215,33 @@ def chmod_files(files, flen, randname, dir_path):
     return
 
 
-def random_og(path):
-    u = random.randint(1025, 65536)
-    g = -1
-    os.chown(path, u, g)
+def random_og(path, own):
+    v = random.randint(1025, 65536)
+    if own == "own":
+        os.chown(path, v, -1)
+    elif own == "grp":
+        os.chown(path, -1, v)
 
 
 def chown_files(files, flen, randname, dir_path):
     if not randname:
         for k in range(files):
-            random_og(dir_path+"/"+"file"+str(k))
+            random_og(dir_path+"/"+"file"+str(k), "own")
     else:
         dirs = os.listdir(dir_path)
         for fil in dirs:
-            random_og(dir_path+"/"+fil)
+            random_og(dir_path+"/"+fil, "own")
     return
 
 
 def chgrp_files(files, flen, randname, dir_path):
     if not randname:
         for k in range(files):
-            random_og(dir_path+"/"+"file"+str(k))
+            random_og(dir_path+"/"+"file"+str(k), "grp")
     else:
         dirs = os.listdir(dir_path)
         for fil in dirs:
-            random_og(dir_path+"/"+fil)
+            random_og(dir_path+"/"+fil, "grp")
     return
 
 
