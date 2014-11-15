@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/Usrt/bin/python
 
 import os
 import re
@@ -10,7 +10,6 @@ import random
 import string
 import logger
 import tarfile
-
 
 datsiz = 0
 timr = 0
@@ -29,7 +28,14 @@ def os_rd(src, size):
 def os_wr(dest, data):
     global timr
     st = time.time()
-    fd = os.open(dest, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0644)
+    '''
+    Removing the option os.O_EXCL, since its useful in many cases, like
+    appending on already created files. When you are using randomnames
+    (which is enabled by default) this won't be a problem, you can still
+    keep track of amount of data written. If you want to do
+    some appending on the existing files, disable random names, and rerun.
+    '''
+    fd = os.open(dest, os.O_WRONLY | os.O_CREAT, 0644)
     os.write(fd, data)
     os.close(fd)
     ed = time.time()
