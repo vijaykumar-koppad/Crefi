@@ -13,7 +13,7 @@ def multiple(mnt_pnt, brdth, depth, files, fop, file_type="text", inter="1000",
              randname=False, threads=1):
     threadlist = []
     for i in range(threads):
-        print threads
+        print(threads)
         if threads == 1:
             dir_path = mnt_pnt
         else:
