@@ -5,7 +5,6 @@ import re
 import sys
 import time
 import errno
-import xattr
 import random
 import string
 import logger
